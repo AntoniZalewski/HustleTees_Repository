@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams, useNavigate } from 'react-router-dom'  // Import useNavigate
+import { Link, useParams, useNavigate } from 'react-router-dom'  
 import { Row, Col, Image, ListGroup, Button, Card, Form } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { listProductDetails } from '../actions/productActions'
 
-function ProductScreen() {  // Remove match and history from props
+function ProductScreen() {  
 
     const [qty, setQty] = useState(1)
 
     const { id } = useParams()
     const dispatch = useDispatch()
-    const navigate = useNavigate()  // Initialize navigate
+    const navigate = useNavigate()  
 
     const productDetails = useSelector(state => state.productDetails)
     const { loading, error, product } = productDetails
@@ -23,7 +23,7 @@ function ProductScreen() {  // Remove match and history from props
     }, [dispatch, id])
 
     const addToCartHandler = () => {
-        navigate(`/cart/${id}?qty=${qty}`)  // Use navigate instead of history.push
+        navigate(`/cart/${id}?qty=${qty}`)  
     }
 
     return (
