@@ -21,6 +21,7 @@ import {
     USER_UPDATE_PROFILE_RESET,
 
 } from '../constants/userConstants';
+import { clearCart } from './cartActions'
 
 export const login = (email, password) => async (dispatch) => {
     try {
@@ -59,8 +60,11 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo')
+    localStorage.removeItem('cartItems')
+    localStorage.removeItem('shippingAddress')
     dispatch({ type: USER_LOGOUT })
     dispatch({ type: USER_DETAILS_RESET })
+    dispatch(clearCart())
 }
 
 export const register = (name, email, password) => async (dispatch) => {

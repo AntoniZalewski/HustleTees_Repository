@@ -50,7 +50,7 @@ function ProductScreen() {
                                 <Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} />
                             </ListGroup.Item>
                             <ListGroup.Item>
-                                Price: ${product.price}
+                                Price: PLN{product.price}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 Description: {product.description}
@@ -65,7 +65,7 @@ function ProductScreen() {
                                     <Row>
                                         <Col>Price:</Col>
                                         <Col>
-                                            <strong>${product.price}</strong>
+                                            <strong>PLN{product.price}</strong>
                                         </Col>
                                     </Row>
                                 </ListGroup.Item>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, ListGroup, Image, Form, Button, Card, ListGroupItem } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
 import Message from '../components/Message';
 import { addToCart, removeFromCart } from '../actions/cartActions';
 
@@ -17,6 +17,9 @@ function CartScreen() {
     const cart = useSelector((state) => state.cart);
     const { cartItems } = cart;
 
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
     useEffect(() => {
         if (productId) {
             dispatch(addToCart(productId, qty));
@@ -24,11 +27,15 @@ function CartScreen() {
     }, [dispatch, productId, qty]);
 
     const removeFromCartHandler = (id) => {
-        dispatch(removeFromCart(id))
+        dispatch(removeFromCart(id));
     };
 
     const checkoutHandler = () => {
-      navigate('/login?redirect=shipping');
+        if (userInfo) {
+            navigate('/shipping');
+        } else {
+            navigate('/login?redirect=/shipping');
+        }
     };
 
     return (
@@ -51,7 +58,7 @@ function CartScreen() {
                                         <Col md={3}>
                                             <Link to={`/product/${item.product}`}>{item.name}</Link>
                                         </Col>
-                                        <Col md={2}>${item.price}</Col>
+                                        <Col md={2}>PLN{item.price}</Col>
 
                                         <Col md={3}>
                                             <Form.Control
@@ -89,7 +96,7 @@ function CartScreen() {
                       <ListGroup variant='flush'>
                         <ListGroup.Item>
                           <h2>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
-                          ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
+                          PLN{cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
                         </ListGroup.Item>
                       </ListGroup>   
 
@@ -108,7 +115,7 @@ function CartScreen() {
 
             </Row>
         </div>
-    )
+    );
 }
 
 export default CartScreen;
