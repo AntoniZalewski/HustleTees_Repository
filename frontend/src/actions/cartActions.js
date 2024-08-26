@@ -47,10 +47,8 @@ export const saveShippingAddress = (data) => (dispatch) => {
 }
 
 export const clearCart = () => (dispatch) => {
-    dispatch({ type: CART_CLEAR_ITEMS })
-    localStorage.removeItem('cartItems')
-    localStorage.removeItem('shippingAddress')
-}
+    dispatch({ type: CART_CLEAR_ITEMS });
+};
 
 export const savePaymentMethod = (data) => (dispatch) => {
     dispatch({

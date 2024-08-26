@@ -66,11 +66,14 @@ function CartScreen() {
                                                 value={item.qty}
                                                 onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
                                                 {
-                                                    [...Array(item.countInStock).keys()].map((x) => (
-                                                        <option key={x + 1} value={x + 1}>
-                                                            {x + 1}
-                                                        </option>
-                                                    ))
+                                                    // Defensive check to ensure item.countInStock is a valid number
+                                                    Number.isInteger(item.countInStock) && item.countInStock > 0
+                                                        ? [...Array(item.countInStock).keys()].map((x) => (
+                                                            <option key={x + 1} value={x + 1}>
+                                                                {x + 1}
+                                                            </option>
+                                                        ))
+                                                        : null
                                                 }
                                             </Form.Control>
                                         </Col>
