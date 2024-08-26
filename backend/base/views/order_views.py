@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from base.models import Order, OrderItem, Product, ShippingAddress
-from base.serializer import OrderSerializer
+from base.serializers import OrderSerializer
 from rest_framework.permissions import IsAuthenticated
 
 @api_view(['POST'])
@@ -11,11 +11,11 @@ def addOrderItem(request):
     user = request.user
     data = request.data
 
-    orderItems = data['orderItems']
-
-    if orderItems and len(orderItems) == 0:
-        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
-    else:
+    try:
+        orderItems = data['orderItems']
+        if not orderItems or len(orderItems) == 0:
+            return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
+        
         # Create order
         order = Order.objects.create(
             user=user,
@@ -36,7 +36,10 @@ def addOrderItem(request):
 
         # Create order items and set order to orderItem relationship
         for i in orderItems:
-            product = Product.objects.get(_id=i['product'])
+            try:
+                product = Product.objects.get(_id=i['product'])
+            except Product.DoesNotExist:
+                return Response({'detail': f'Product with id {i["product"]} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
             item = OrderItem.objects.create(
                 product=product,
@@ -53,3 +56,28 @@ def addOrderItem(request):
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
+
+    except KeyError as e:
+        return Response({'detail': f'Missing field {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrders(request):
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+    user = request.user
+    try:
+        order = Order.objects.get(_id=pk)
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            return Response({'detail': 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
+    except Order.DoesNotExist:
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
