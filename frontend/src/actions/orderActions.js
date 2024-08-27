@@ -8,6 +8,10 @@ import {
     ORDER_DETAILS_REQUEST,
     ORDER_DETAILS_FAIL,
     ORDER_SAVE_SHIPPING_ADDRESS,
+    ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET,
 } from '../constants/orderConstants';
 
 export const saveShippingAddress = (data) => (dispatch) => {
@@ -63,12 +67,42 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
 
         const { data } = await axios.get(`/api/orders/${id}/`, config);
 
-        localStorage.setItem('orderDetails', JSON.stringify(data));
+        const shippingAddress = data.shippingAddress || JSON.parse(localStorage.getItem('shippingAddress')) || {};
 
-        dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
+        const orderDetails = { ...data, shippingAddress };
+
+        localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
+
+        dispatch({ type: ORDER_DETAILS_SUCCESS, payload: orderDetails });
     } catch (error) {
         dispatch({
             type: ORDER_DETAILS_FAIL,
+            payload: error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message,
+        });
+    }
+};
+
+export const payOrder = (orderId, paymentResult) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: ORDER_PAY_REQUEST });
+
+        const { userLogin: { userInfo } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+
+        await axios.put(`/api/orders/${orderId}/pay/`, paymentResult, config);
+
+        dispatch({ type: ORDER_PAY_SUCCESS });
+    } catch (error) {
+        dispatch({
+            type: ORDER_PAY_FAIL,
             payload: error.response && error.response.data.message
                 ? error.response.data.message
                 : error.message,

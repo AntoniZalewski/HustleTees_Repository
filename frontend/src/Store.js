@@ -1,9 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { composeWithDevTools } from 'redux-devtools-extension';
+// import { composeWithDevTools } from 'redux-devtools-extension';
 import { productlistReducer, productDetailsReducer } from './reducers/productReducers';
 import { cartReducer } from './reducers/cartReducers';
 import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer } from './reducers/orderReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer } from './reducers/orderReducers';
 
 const reducer = combineReducers({
     productList: productlistReducer,
@@ -15,9 +15,10 @@ const reducer = combineReducers({
     userUpdateProfile: userUpdateProfileReducer,
     orderCreate: orderCreateReducer,
     orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
 });
 
-// Pobieranie danych koszyka z localStorage
+
 const cartItemsFromStorage = localStorage.getItem('cartItems') ?
     JSON.parse(localStorage.getItem('cartItems')) : []
 
@@ -30,21 +31,23 @@ const shippingAddressFromStorage = localStorage.getItem('shippingAddress') ?
 const paymentMethodFromStorage = localStorage.getItem('paymentMethod') ?
     JSON.parse(localStorage.getItem('paymentMethod')) : ''
 
-const initialState = {
-    cart: { 
-        cartItems: cartItemsFromStorage, 
-        shippingAddress: shippingAddressFromStorage,
-        paymentMethod: paymentMethodFromStorage 
-    },
-    userLogin: { userInfo: userInfoFromStorage }
-};
+    const orderDetailsFromStorage = localStorage.getItem('orderDetails')
+    ? JSON.parse(localStorage.getItem('orderDetails'))
+    : undefined; // Ensure it is undefined if not found
 
-const middleware = [];
+const initialState = {
+    cart: {
+        cartItems: cartItemsFromStorage,
+        shippingAddress: shippingAddressFromStorage,
+        paymentMethod: paymentMethodFromStorage,
+    },
+    userLogin: { userInfo: userInfoFromStorage },
+    orderDetails: { order: orderDetailsFromStorage }, // Ensure this is properly set
+};
 
 const store = configureStore({
     reducer,
     preloadedState: initialState, 
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
     devTools: process.env.NODE_ENV !== 'production',
 });
 

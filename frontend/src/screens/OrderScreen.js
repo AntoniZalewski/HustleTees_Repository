@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+// OrderScreen.js
+import React, { useEffect, useState } from 'react';
 import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderDetails } from '../actions/orderActions';
+import { getOrderDetails, payOrder } from '../actions/orderActions';
+import PayPalIntegration from '../components/PayPalIntegration';
 
 function OrderScreen() {
     const { id: orderId } = useParams();
@@ -12,23 +14,29 @@ function OrderScreen() {
     const dispatch = useDispatch();
 
     const orderDetails = useSelector((state) => state.orderDetails);
-    const { order, error, loading } = orderDetails;
+    const { loading = true, error, order } = orderDetails;
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
+    const orderPay = useSelector((state) => state.orderPay);
+    const { loading: loadingPay = false, success: successPay } = orderPay;
+
     useEffect(() => {
         if (!userInfo) {
             navigate('/login');
-        } else if (!order || order._id !== orderId) {
+        } else if (!order || order._id !== orderId || successPay) {
             dispatch(getOrderDetails(orderId));
         }
-    }, [dispatch, orderId, userInfo, navigate, order?._id]);
+    }, [dispatch, orderId, userInfo, navigate, successPay]);
+
+    const successPaymentHandler = (paymentResult) => {
+        dispatch(payOrder(orderId, paymentResult));
+    };
 
     const itemsPrice = order?.orderItems
         ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
         : 0;
-
 
     return (
         <div>
@@ -132,6 +140,15 @@ function OrderScreen() {
                                             <Col>${order.totalPrice}</Col>
                                         </Row>
                                     </ListGroup.Item>
+                                    {!order.isPaid && (
+                                        <ListGroup.Item>
+                                            {loadingPay && <Loader />}
+                                            <PayPalIntegration
+                                                amount={order.totalPrice}
+                                                onSuccess={successPaymentHandler}
+                                            />
+                                        </ListGroup.Item>
+                                    )}
                                 </ListGroup>
                             </Card>
                         </Col>
