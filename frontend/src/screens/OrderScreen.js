@@ -7,6 +7,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getOrderDetails, payOrder } from '../actions/orderActions';
 import PayPalIntegration from '../components/PayPalIntegration';
+import { ORDER_PAY_RESET } from '../constants/orderConstants';
 
 function OrderScreen() {
     const { id: orderId } = useParams();
@@ -26,6 +27,7 @@ function OrderScreen() {
         if (!userInfo) {
             navigate('/login');
         } else if (!order || order._id !== orderId || successPay) {
+            dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
         }
     }, [dispatch, orderId, userInfo, navigate, successPay]);
@@ -100,7 +102,7 @@ function OrderScreen() {
                                                             <Link to={`/product/${item.product}`}>{item.name}</Link>
                                                         </Col>
                                                         <Col md={4}>
-                                                            {item.qty} x ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                            {item.qty} x PLN{item.price} = PLN{(item.qty * item.price).toFixed(2)}
                                                         </Col>
                                                     </Row>
                                                 </ListGroup.Item>
@@ -119,25 +121,25 @@ function OrderScreen() {
                                     <ListGroup.Item>
                                         <Row>
                                             <Col>Items</Col>
-                                            <Col>${itemsPrice}</Col>
+                                            <Col>PLN{itemsPrice}</Col>
                                         </Row>
                                     </ListGroup.Item>
                                     <ListGroup.Item>
                                         <Row>
                                             <Col>Shipping</Col>
-                                            <Col>${order.shippingPrice}</Col>
+                                            <Col>PLN{order.shippingPrice}</Col>
                                         </Row>
                                     </ListGroup.Item>
                                     <ListGroup.Item>
                                         <Row>
                                             <Col>Tax</Col>
-                                            <Col>${order.taxPrice}</Col>
+                                            <Col>PLN{order.taxPrice}</Col>
                                         </Row>
                                     </ListGroup.Item>
                                     <ListGroup.Item>
                                         <Row>
                                             <Col>Total</Col>
-                                            <Col>${order.totalPrice}</Col>
+                                            <Col>PLN{order.totalPrice}</Col>
                                         </Row>
                                     </ListGroup.Item>
                                     {!order.isPaid && (
