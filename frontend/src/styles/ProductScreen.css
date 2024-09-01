@@ -1,0 +1,105 @@
+/* ProductScreen.css */
+:root {
+    --main-color: #35835c; /* Default main color */
+    --secondary-color: #f0f0f0; /* Default secondary color */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    z-index: 2; /* Ensure the buttons are above other elements */
+    width: 3%; /* Adjust the width to make the buttons smaller */
+    height: 100%; /* Make the buttons span the full height */
+    top: 0; /* Align the buttons to the top */
+    bottom: 0; /* Align the buttons to the bottom */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1; /* Ensure the buttons are fully visible */
+    position: absolute; /* Ensure the buttons are positioned absolutely */
+    background: none; /* Remove any background */
+    border: none; /* Remove any border */
+    outline: none; /* Remove any outline */
+}
+
+.carousel-control-prev {
+    left: -5%; /* Position the left button further outside the carousel */
+}
+
+.carousel-control-next {
+    right: -5%; /* Position the right button further outside the carousel */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    display: none; /* Hide the default icons */
+}
+
+.arrow {
+    position: absolute;
+    padding: 2rem; /* Arrow size */
+    box-shadow: 1px -1px 0 1px var(--main-color) inset;
+    -webkit-box-shadow: 2px -2px var(--main-color) inset;
+    border: solid transparent;
+    border-width: 0 0 2rem 2rem;
+    transition: 0.2s;
+}
+
+.arrow:hover {
+    box-shadow: 2px -2px 0 2px var(--main-color) inset;
+    -webkit-box-shadow: 4px -4px var(--main-color) inset;
+}
+
+.arrow-up {
+    transform: rotate(135deg);
+}
+
+.arrow-right {
+    transform: rotate(225deg);
+}
+
+.arrow-down {
+    transform: rotate(-45deg);
+}
+
+.arrow-left {
+    transform: rotate(45deg);
+}
+
+.product-info-container {
+    background-color: var(--secondary-color);
+    padding: 1rem; /* Add some padding */
+    border-radius: 10px; /* Soften the edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    margin-left: 1rem; /* Add some margin to the left */
+}
+
+.carousel-container {
+    margin-right: 1rem; /* Add margin to the right of the carousel */
+}
+
+.product-screen-row {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.round-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--main-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.round-button:hover {
+    background-color: var(--secondary-color);
+}

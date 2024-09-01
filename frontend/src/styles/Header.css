@@ -1,0 +1,64 @@
+/* Styling for the Navbar */
+.custom-navbar {
+    background-color: black; /* Set navbar background to black */
+    padding: 0; /* Remove padding to align the logo at the top */
+    position: sticky; /* Sticky positioning to stay at the top */
+    top: 0; /* Ensure it sticks at the top */
+    z-index: 1000; /* Ensure header is above other content */
+    display: flex; /* Make navbar a flex container */
+    justify-content: space-between; /* Space between logo and nav items */
+    align-items: center; /* Vertically center items */
+    height: 150px; /* Set a fixed height for the navbar */
+  }
+  
+  /* Styling for logo container */
+  .custom-logo-container {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align logo to the left */
+  }
+  
+  /* Styles for the logo */
+  .custom-logo {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 400px; /* Keep the original width for the logo */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  /* Styles for nav items */
+  .navbar-nav .nav-link, 
+  .navbar-nav .dropdown-toggle {
+    font-size: 1rem; /* Decrease font size */
+    color: white !important; /* Set text color to white */
+    margin-right: 10px; /* Adds spacing between nav links */
+  }
+  
+  .navbar-nav .nav-link i, 
+  .navbar-nav .dropdown-toggle i {
+    font-size: 1rem; /* Decrease icon size */
+    color: white; /* Set icon color to white */
+  }
+  
+  /* Adjust font size and padding for nav items */
+  .nav-item-small {
+    font-size: 1rem; /* Smaller text size */
+    padding: 0.3rem 0.6rem; /* Reduced padding */
+    color: white; /* Set text color to white */
+  }
+  
+  /* Responsive styling adjustments */
+  @media (max-width: 767px) {
+    .navbar-collapse {
+      justify-content: flex-start; /* Align items left on smaller screens */
+    }
+  
+    .nav-item-small {
+      font-size: 0.9rem; /* Further reduce font size for smaller screens */
+      padding: 0.3rem 0.5rem; /* Further reduce padding */
+    }
+  }
+  

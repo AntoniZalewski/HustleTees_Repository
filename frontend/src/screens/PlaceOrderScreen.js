@@ -89,7 +89,7 @@ function PlaceOrderScreen() {
                                         <ListGroup.Item key={index}>
                                             <Row>
                                                 <Col md={2}>
-                                                    <Image src={item.image} alt={item.name} fluid rounded />
+                                                    <Image src={item.image} alt={item.name} fluid />
                                                 </Col>
                                                 <Col>
                                                     <Link to={`/product/${item.product}`}>{item.name}</Link>
