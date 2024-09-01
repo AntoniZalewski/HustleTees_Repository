@@ -48,7 +48,7 @@ def addOrderItem(request):
                 name=product.name,
                 qty=i['qty'],
                 price=i['price'],
-                image=product.image.url,
+                image=product.main_image.url if product.main_image else '',  # Update to main_image
             )
 
             # Update stock

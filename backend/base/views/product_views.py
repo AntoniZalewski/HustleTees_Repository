@@ -63,7 +63,7 @@ def getUsers(request):
 @api_view(['GET'])
 def getProducts(request):
     products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True)
+    serializer = ProductSerializer(products, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get Single Product by ID
@@ -71,7 +71,7 @@ def getProducts(request):
 def getProduct(request, pk):
     try:
         product = Product.objects.get(_id=pk)
-        serializer = ProductSerializer(product, many=False)
+        serializer = ProductSerializer(product, many=False, context={'request': request})
         return Response(serializer.data)
     except Product.DoesNotExist:
         return Response({'detail': 'Product not found'}, status=404)
