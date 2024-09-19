@@ -27,6 +27,7 @@
     padding: 0;
     width: 400px; /* Keep the original width for the logo */
     height: auto; /* Maintain aspect ratio */
+    filter: brightness(0) invert(1);
   }
   
   /* Styles for nav items */

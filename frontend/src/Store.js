@@ -1,6 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 // import { composeWithDevTools } from 'redux-devtools-extension';
-import { productlistReducer, productDetailsReducer } from './reducers/productReducers';
+import { 
+        productListReducer, 
+        productDetailsReducer, 
+        productDeleteReducer, 
+        productCreateReducer,
+        productUpdateReducer,
+     } from './reducers/productReducers';
 import { cartReducer } from './reducers/cartReducers';
 import { 
     userLoginReducer, 
@@ -14,8 +20,12 @@ import {
 import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer, } from './reducers/orderReducers';
 
 const reducer = combineReducers({
-    productList: productlistReducer,
+    productList: productListReducer,
     productDetails: productDetailsReducer,
+    productDelete: productDeleteReducer,
+    productCreate: productCreateReducer,
+    productUpdate: productUpdateReducer,
+
     cart: cartReducer,
     
     userLogin: userLoginReducer,
@@ -47,7 +57,7 @@ const paymentMethodFromStorage = localStorage.getItem('paymentMethod') ?
 
     const orderDetailsFromStorage = localStorage.getItem('orderDetails')
     ? JSON.parse(localStorage.getItem('orderDetails'))
-    : undefined; // Ensure it is undefined if not found
+    : undefined; 
 
 const initialState = {
     cart: {
@@ -56,7 +66,7 @@ const initialState = {
         paymentMethod: paymentMethodFromStorage,
     },
     userLogin: { userInfo: userInfoFromStorage },
-    orderDetails: { order: orderDetailsFromStorage }, // Ensure this is properly set
+    orderDetails: { order: orderDetailsFromStorage }, 
 };
 
 const store = configureStore({

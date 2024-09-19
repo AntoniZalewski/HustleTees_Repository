@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
-    main_image = models.ImageField(upload_to='main_images/', null=True, blank=True)
+    main_image = models.ImageField(upload_to='main_images/', null=True, blank=True, default='main_images/placeholder.png')
     description = models.TextField(null=True, blank=True)
     rating = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     numReviews = models.IntegerField(null=True, blank=True, default=0)
@@ -13,8 +13,8 @@ class Product(models.Model):
     countInStock = models.IntegerField(null=True, blank=True, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
-    model_3d = models.FileField(upload_to='models/', null=True, blank=True) 
-    video = models.FileField(upload_to='videos/', null=True, blank=True) 
+    model_3d = models.FileField(upload_to='models/', null=True, blank=True, default='models/placeholder.png') 
+    video = models.FileField(upload_to='videos/', null=True, blank=True, default='videos/placeholder.png') 
     main_color = models.CharField(max_length=7, default='#FFFFFF')
     sec_color = models.CharField(max_length=7, default='#000000')
 
@@ -23,7 +23,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='product_images/', null=True, blank=True, default='product_images/placeholder.png')
 
     def __str__(self):
         return f"Image for {self.product.name}"

@@ -15,25 +15,27 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_main_image_url(self, obj):
         request = self.context.get('request')
-        if obj.main_image and hasattr(obj.main_image, 'url'):
+        if request and obj.main_image and hasattr(obj.main_image, 'url'):
             return request.build_absolute_uri(obj.main_image.url)
         return None
 
     def get_model_3d_url(self, obj):
         request = self.context.get('request')
-        if obj.model_3d and hasattr(obj.model_3d, 'url'):
+        if request and obj.model_3d and hasattr(obj.model_3d, 'url'):
             return request.build_absolute_uri(obj.model_3d.url)
         return None
 
     def get_video_url(self, obj):
         request = self.context.get('request')
-        if obj.video and hasattr(obj.video, 'url'):
+        if request and obj.video and hasattr(obj.video, 'url'):
             return request.build_absolute_uri(obj.video.url)
         return None
 
     def get_images(self, obj):
         request = self.context.get('request')
-        return [request.build_absolute_uri(image.image.url) for image in obj.images.all()]
+        if request:
+            return [request.build_absolute_uri(image.image.url) for image in obj.images.all()]
+        return []
     
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)

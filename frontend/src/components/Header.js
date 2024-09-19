@@ -23,7 +23,7 @@ function Header() {
           <LinkContainer to="/">
             <Navbar.Brand className="custom-logo-container">
               <img
-                src="/napisHustleteesWhite.png"
+                src="/logo_full_name_fixed.svg"
                 alt="HustleTees Logo"
                 className="custom-logo"
               />
