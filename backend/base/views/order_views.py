@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from base.models import Order, OrderItem, Product, ShippingAddress
 from base.serializers import OrderSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from datetime import datetime
 
 @api_view(['POST'])
@@ -97,6 +97,12 @@ def getMyOrders(request):
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getOrders(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
 
 
@@ -108,4 +114,17 @@ def updateOrderToPaid(request, pk):
     order.paidAt = datetime.now()
     order.save()
     return Response('Order was paid')
-    
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def deliverOrder(request, pk):
+    try:
+        order = Order.objects.get(_id=pk)
+        order.isDelivered = True
+        order.deliveredAt = datetime.now()
+        order.save()
+        return Response('Order was delivered')
+    except Order.DoesNotExist:
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
