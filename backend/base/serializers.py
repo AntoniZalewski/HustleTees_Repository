@@ -1,9 +1,18 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Product, Order, OrderItem, ShippingAddress
+from .models import Product, Order, OrderItem, ShippingAddress, Review
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField()
+
+
     main_image_url = serializers.SerializerMethodField()
     model_3d_url = serializers.SerializerMethodField()
     video_url = serializers.SerializerMethodField()
@@ -37,6 +46,13 @@ class ProductSerializer(serializers.ModelSerializer):
             return [request.build_absolute_uri(image.image.url) for image in obj.images.all()]
         return []
     
+    def get_reviews(self, obj):
+        reviews = obj.review_set.all()
+        serializer = ReviewSerializer(reviews, many=True)
+        return serializer.data
+    
+
+    
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
     _id = serializers.SerializerMethodField(read_only=True)
@@ -68,6 +84,8 @@ class UserSerializerWithToken(UserSerializer):
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
+    
+    
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:

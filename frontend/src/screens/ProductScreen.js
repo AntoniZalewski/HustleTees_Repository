@@ -5,12 +5,17 @@ import { Row, Col, Image, ListGroup, Card, Button, Form, Carousel, Modal } from 
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { listProductDetails } from '../actions/productActions';
+import { listProductDetails, createProductReview, updateProductReview, deleteProductReview } from '../actions/productActions';
 import ModelViewer from '../components/ModelViewer';
-import '../styles/ProductScreen.css'; // Updated import path
+import '../styles/ProductScreen.css'; 
+import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 
 function ProductScreen() {
     const [qty, setQty] = useState(1);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [editMode, setEditMode] = useState(false);
+    const [reviewId, setReviewId] = useState(null);
     const [showModel, setShowModel] = useState(false);
 
     const { id } = useParams();
@@ -20,9 +25,32 @@ function ProductScreen() {
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
 
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
+    const productReviewCreate = useSelector((state) => state.productReviewCreate);
+    const {
+        success: successProductReview,
+        loading: loadingProductReview,
+        error: errorProductReview,
+    } = productReviewCreate;
+
+    const productReviewUpdate = useSelector((state) => state.productReviewUpdate);
+    const {
+        success: successProductReviewUpdate,
+    } = productReviewUpdate;
+
+    const productReviewDelete = useSelector((state) => state.productReviewDelete);
+    const {
+        success: successProductReviewDelete,
+    } = productReviewDelete;
+
     useEffect(() => {
         dispatch(listProductDetails(id));
-    }, [dispatch, id]);
+        return () => {
+            dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+        };
+    }, [dispatch, id, successProductReview, successProductReviewUpdate, successProductReviewDelete]);
 
     useEffect(() => {
         if (product) {
@@ -31,9 +59,37 @@ function ProductScreen() {
         }
     }, [product]);
 
+    useEffect(() => {
+        if (successProductReviewUpdate) {
+            setEditMode(false);
+        }
+    }, [successProductReviewUpdate]);
+
     const addToCartHandler = () => {
         navigate(`/cart/${id}?qty=${qty}`);
     };
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+        if (editMode) {
+            dispatch(updateProductReview(reviewId, { rating, comment }));
+        } else {
+            dispatch(createProductReview(id, { rating, comment }));
+        }
+    };
+
+    const editReviewHandler = (review) => {
+        setEditMode(true);
+        setReviewId(review._id);
+        setRating(review.rating);
+        setComment(review.comment);
+    };
+
+    const deleteReviewHandler = (reviewId) => {
+        dispatch(deleteProductReview(reviewId));
+    };
+
+    const userHasReviewed = product.reviews.some(review => review.user === userInfo._id);
 
     return (
         <>
@@ -138,6 +194,87 @@ function ProductScreen() {
                                     3D
                                 </div>
                             </div>
+                        </Col>
+                    </Row>
+
+                    <Row className="mt-5">
+                        <Col md={6}>
+                            <h2>Reviews</h2>
+                            {product.reviews.length === 0 && <Message>No Reviews</Message>}
+                            <ListGroup variant='flush'>
+                                {userInfo && (!userHasReviewed || editMode) && (
+                                    <ListGroup.Item>
+                                        <h2>{editMode ? 'Edit Your Review' : 'Write a Customer Review'}</h2>
+                                        {successProductReview && (
+                                            <Message variant='success'>Review submitted successfully</Message>
+                                        )}
+                                        {loadingProductReview && <Loader />}
+                                        {errorProductReview && (
+                                            <Message variant='danger'>{errorProductReview}</Message>
+                                        )}
+                                        <Form onSubmit={submitHandler}>
+                                            <Form.Group controlId='rating'>
+                                                <Form.Label>Rating</Form.Label>
+                                                <div className="star-rating">
+                                                    {[...Array(5)].map((_, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <input
+                                                                type="radio"
+                                                                id={`star${5 - index}`}
+                                                                name="rating"
+                                                                value={5 - index}
+                                                                onChange={(e) => setRating(Number(e.target.value))}
+                                                                checked={rating === 5 - index}
+                                                            />
+                                                            <label htmlFor={`star${5 - index}`}>&#9733;</label>
+                                                        </React.Fragment>
+                                                    ))}
+                                                </div>
+                                            </Form.Group>
+                                            <Form.Group controlId='comment'>
+                                                <Form.Label>Comment</Form.Label>
+                                                <Form.Control
+                                                    as='textarea'
+                                                    row='3'
+                                                    value={comment}
+                                                    onChange={(e) => setComment(e.target.value)}
+                                                ></Form.Control>
+                                            </Form.Group>
+                                            <Button
+                                                disabled={loadingProductReview}
+                                                type='submit'
+                                                variant='primary'
+                                            >
+                                                {editMode ? 'Update' : 'Submit'}
+                                            </Button>
+                                        </Form>
+                                    </ListGroup.Item>
+                                )}
+                                {product.reviews.map((review) => (
+                                    <ListGroup.Item key={review._id}>
+                                        <strong>{review.name}</strong>
+                                        <Rating value={review.rating} />
+                                        <p>{review.createdAt.substring(0, 10)}</p>
+                                        <p>{review.comment}</p>
+                                        {userInfo && review.user === userInfo._id && (
+                                            <>
+                                                <Button
+                                                    variant='light'
+                                                    onClick={() => editReviewHandler(review)}
+                                                >
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    variant='danger'
+                                                    onClick={() => deleteReviewHandler(review._id)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </>
+                                        )}
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
                         </Col>
                     </Row>
 
