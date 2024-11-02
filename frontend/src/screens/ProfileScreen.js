@@ -44,7 +44,7 @@ function ProfileScreen() {
                 setEmail(user.email)
             }
         }
-    }, [navigate, userInfo, dispatch, user?._id, user?.name, success])
+    }, [navigate, userInfo, dispatch, user?._id, user?.name, success, user])
     
     const submitHandler = (e) => {
         e.preventDefault()

@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Antek\Desktop\hustletees_dev\HustleTees_Repository\venv
+set VIRTUAL_ENV=C:\Users\antek\Desktop\hustletees\HustleTees_Repository\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

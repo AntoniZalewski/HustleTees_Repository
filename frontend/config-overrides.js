@@ -1,4 +1,5 @@
-const { override, addWebpackModuleRule } = require('customize-cra');
+const { override, addWebpackModuleRule, addWebpackPlugin } = require('customize-cra');
+const webpack = require('webpack');
 
 module.exports = override(
   addWebpackModuleRule({
@@ -22,5 +23,23 @@ module.exports = override(
         },
       },
     ],
-  })
+  }),
+  addWebpackModuleRule({
+    test: /\.mjs$/,
+    enforce: 'pre',
+    use: ['source-map-loader'],
+    exclude: [
+      /node_modules\/@mediapipe\/tasks-vision/,
+      /node_modules\/@react-three\/drei\/node_modules\/@mediapipe\/tasks-vision/
+    ],
+  }),
+  (config) => {
+    config.ignoreWarnings = [
+      {
+        module: /@react-three\/drei\/node_modules\/@mediapipe\/tasks-vision/,
+        message: /Failed to parse source map/,
+      },
+    ];
+    return config;
+  }
 );

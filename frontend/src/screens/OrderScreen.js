@@ -1,5 +1,5 @@
 // OrderScreen.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,7 +30,7 @@ function OrderScreen() {
             dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
         }
-    }, [dispatch, orderId, userInfo, navigate, successPay]);
+    }, [dispatch, orderId, userInfo, navigate, successPay, order]);
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
