@@ -1,0 +1,33 @@
+Instructions for required installs for a new virtual machine:
+
+1. Delete the existing virtual environment:
+   - Manually delete the `venv` directory in your project.
+
+2. Create a new virtual environment:
+
+   python -m venv venv
+
+3. Activate the virtual environment (only for running the backend):
+
+    .\venv\Scripts\activate
+
+4. Install Django and other backend dependencies on the venv:
+
+    pip install django djangorestframework
+    pip install djangorestframework-simplejwt
+    pip install django-cors-headers
+    pip install Pillow
+
+    then you can run the backend - python manage.py runserver
+
+
+5. Install Node.js and npm on your computer:
+
+    Download and install Node.js from nodejs.org
+
+6. navigate to frontend directory and install npm (not using venv)
+
+    cd frontend
+    npm install --legacy-peer-deps
+
+    Then you can start the frontend react app - npm start
